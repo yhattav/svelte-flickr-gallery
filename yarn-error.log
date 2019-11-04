@@ -1,0 +1,51 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.7.0/libexec/bin/yarn.js install
+
+PATH: 
+  /usr/local/opt/maven@3.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+
+Yarn version: 
+  1.7.0
+
+Node version: 
+  8.11.2
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: http://npm.dev.wixpress.com/sirv-cli: ETIMEDOUT
+      at Timeout._onTimeout (/usr/local/Cellar/yarn/1.7.0/libexec/lib/cli.js:135339:19)
+      at ontimeout (timers.js:498:11)
+      at tryOnTimeout (timers.js:323:5)
+      at Timer.listOnTimeout (timers.js:290:5)
+
+npm manifest: 
+  {
+    "name": "svelte-app",
+    "version": "1.0.0",
+    "devDependencies": {
+      "rollup": "^1.12.0",
+      "rollup-plugin-commonjs": "^10.0.0",
+      "rollup-plugin-livereload": "^1.0.0",
+      "rollup-plugin-node-resolve": "^5.2.0",
+      "rollup-plugin-svelte": "^5.0.3",
+      "rollup-plugin-terser": "^5.1.2",
+      "svelte": "^3.0.0"
+    },
+    "dependencies": {
+      "sirv-cli": "^0.4.4"
+    },
+    "scripts": {
+      "build": "rollup -c",
+      "dev": "rollup -c -w",
+      "start": "sirv public --single",
+      "start:dev": "sirv public --single --dev"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
