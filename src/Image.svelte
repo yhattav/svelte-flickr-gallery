@@ -6,20 +6,37 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand'
 let icon = faSync;
 export let index, id, large, large_Click, key, dto, imageSize, galleryWidth, delete_Click;
-let rotate = 0, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '';
+let rotate = 0, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '', imageUrl;
 
-function urlFromDto(dto) {
-    return `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
-  }
+  $: imageUrl = `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`
 
-function rotate_Click ()  {
-    var rotateEdit = this.state.rotate;
-    rotateEdit = rotateEdit + 90;
-        this.setState({
-      rotate: rotateEdit
-    });
-  }
+
+// function rotate_Click ()  {
+//     var rotateEdit = this.state.rotate;
+//     rotateEdit = rotateEdit + 90;
+//         this.setState({
+//       rotate: rotateEdit
+//     });
+//   }
 </script>
+
+
+<div class="image-root" style="--imageUrl: url({imageUrl}); --galleryImageSize: {imageSize}px; --imageTransform: rotate(${rotate}deg)`">
+	<div
+	style={{
+		transform: 'rotate(-'+ rotate + 'deg)',
+    //backgroundImage: `url(${urlFromDto(dto)})`
+	}}>
+	<div>
+</div>
+<!-- <Icon icon={icon}>
+</Icon> -->
+		<!-- <Icon icon=faSync /> -->
+		<!-- class="image-icon rotateButton" id="rotateButton" name="sync-alt" title="rotate" onClick={() => rotate_Click()}<Icon icon=faTrash className="image-icon deleteButton" id="deleteButton" name="trash-alt" title="delete" onClick={() => this.props.deleteClick(this.props.id)}/> -->
+		<!-- <Icon icon=faExpand className="image-icon expandButton" id="expandButton" name="expand" title="expand" onClick={() => this.props.largeClick(this.props.id)}/> -->
+	</div>
+</div>
+
 
 <style>
 .image-root {
@@ -30,9 +47,10 @@ function rotate_Click ()  {
   box-sizing: border-box;
   position: relative;
   border: 1px solid white;
-  background-color: red;
   width: var(--galleryImageSize);
   height: var(--galleryImageSize);
+  background-image: var(--imageUrl);
+  transform: var(--imageTransform);
 }
    .image-root div {
     visibility: hidden;
@@ -75,20 +93,5 @@ function rotate_Click ()  {
   
 
 </style>
-
-<div class="image-root" style="--galleryImageSize: {imageSize}px">
-	<div
-	style={{
-		transform: 'rotate(-'+ rotate + 'deg)'
-	}}>
-	<div>
-</div>
-<!-- <Icon icon={icon}>
-</Icon> -->
-		<!-- <Icon icon=faSync /> -->
-		<!-- class="image-icon rotateButton" id="rotateButton" name="sync-alt" title="rotate" onClick={() => rotate_Click()}<Icon icon=faTrash className="image-icon deleteButton" id="deleteButton" name="trash-alt" title="delete" onClick={() => this.props.deleteClick(this.props.id)}/> -->
-		<!-- <Icon icon=faExpand className="image-icon expandButton" id="expandButton" name="expand" title="expand" onClick={() => this.props.largeClick(this.props.id)}/> -->
-	</div>
-</div>
 
 

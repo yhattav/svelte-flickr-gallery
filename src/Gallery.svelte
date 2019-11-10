@@ -8,7 +8,7 @@
   export let tag;
   let images=[];
   let windowScrollY, windowInnerWidth = 1000, windowInnerHeight;
-  let galleryHeight, galleryWidth, clientHeight;
+  let galleryHeight = 5000, galleryWidth, clientHeight;
   let div, shouldGetMoreItems, gettingItems = false;
 //   function moveImage(dragIndex, hoverIndex) {
 // 		const { images } = this.state
@@ -70,7 +70,7 @@ let throttledGetImages =
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
     const windowBottom = windowInnerHeight + windowScrollY;
-    shouldGetMoreItems = windowScrollY > 100 && (windowBottom >= docHeight - 50 );
+    shouldGetMoreItems = windowScrollY > 100 && (windowBottom >= docHeight - 500 );
 
   }
 
@@ -118,9 +118,9 @@ afterUpdate(() => {
 <svelte:window bind:innerWidth={windowInnerWidth} bind:innerHeight={windowInnerHeight} bind:scrollY={windowScrollY}/>
 <div bind:this={div} class="gallery-root">
 
-<div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div>
-	{#each images as image}
-	 <Image index={index} id={dto.id} large={dto.large} {large_Click} {delete_Click} {image} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+<!-- <div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div> -->
+	{#each images as dto}
+	 <Image index={index} id={dto.id} large={dto.large} {large_Click} {delete_Click} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
 	{/each}
 </div> 
 
