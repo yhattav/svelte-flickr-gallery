@@ -32,7 +32,6 @@
 
   function deleteClick(id) {
     var removeIndex = images.findIndex(image => image.id === id);
-    console.log('remove', removeIndex, id);
     images.splice(removeIndex, 1); //mutating objects (and arrays) that are render-involved will not rerender in svelte, see the next line for the solution
     images = images; //this is by design https://github.com/sveltejs/svelte/issues/2362
   }
@@ -69,7 +68,7 @@ let throttledGetImages =
   throttle(getImages, 200, true);
 
 
-  function handleScroll() {
+  function handleScroll() { //TODO should throttle scroll
     const body = document.body;
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
@@ -81,7 +80,6 @@ let throttledGetImages =
   async function getImages(tag, page = currentPage) {
     if(!gettingItems) {
     gettingItems = true;
-    console.log('get Images', tag, page);
     const getImagesUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&page=${page}&format=json&nojsoncallback=1`;
     const response = await fetch(getImagesUrl , {
             method: 'GET',
@@ -93,13 +91,12 @@ let throttledGetImages =
           res.photos.photo &&
           res.photos.photo.length > 0
         )  {
-          if(page === 0) { console.log('setting back items');images = []}
+          if(page === 0) {images = []}
           images = (page === 0) ? res.photos.photo : images.concat(res.photos.photo);
         }
       
   currentPage = page + 1;
   gettingItems = false;
-  console.log('currentPage is now:', currentPage);
     }
   }
   
@@ -108,7 +105,7 @@ let throttledGetImages =
 
 beforeUpdate(() => {
   handleScroll();
-  console.log('before update')
+  console.log('before update - try to lower me?')
 });
 
 afterUpdate(() => {

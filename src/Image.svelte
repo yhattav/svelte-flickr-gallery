@@ -13,18 +13,15 @@ let rotate = 0, opacity = 1, backgroundImage = '', width = '100%', height = '100
   $: imageUrl = `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`
 
 
-function handleRotate ()  {
-  console.log('rotate', index)
-  rotate+=90;
+  function handleRotate ()  {
+    rotate+=90;
   }
 
   function deleteImage()  {
-  console.log('delete')
-  deleteClick(id);
+    deleteClick(id);
   }
   function expandImage()  {
-  console.log('expand')
-  handleFullscreen(id);
+    handleFullscreen(id);
   }
 
 </script>
@@ -33,7 +30,7 @@ function handleRotate ()  {
 <div class="image-root" style="--imageUrl: url({imageUrl}); --galleryImageSize: {imageSize}px; --imageTransform: rotate({rotate}deg)">
 	<div class="image-icon-box" style="transform: rotate(-{rotate}deg);">
     <div class="image-icon-wrapper rotateButton" name="sync-alt" title="rotate" on:click={handleRotate}>
-		  <Icon class="image-icon" icon={faSync}/>
+      <Icon class="image-icon" icon={faSync}/>
     </div>
     <div class="image-icon-wrapper deleteButton" name="trash-alt" title="delete" on:click={deleteImage}>
       <Icon icon={faTrash} class="image-icon" />

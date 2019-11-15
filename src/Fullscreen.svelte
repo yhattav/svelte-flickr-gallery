@@ -3,7 +3,7 @@
   import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
   import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
   import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight'
-  let sizes=[{width: 100, height: 100}];
+  let sizes=[{width: 100, height: 100, source:''}];
 	export let galleryWidth, galleryHeight, dto = {}, index, galleryLength, handleFullscreen;
   $: imageWidth = sizes[sizes.length-1] ? sizes[sizes.length-1].width : sizes[sizes.length].width;
   $: imageHeight = sizes[sizes.length-1] ? sizes[sizes.length-1].height : sizes[sizes.length].height;
@@ -12,7 +12,7 @@
   $: isVertical = (imageRatio >= galleryRatio);
   $: slideWidth = isVertical ? galleryHeight / imageRatio * 0.9 : galleryWidth * 0.9;
   $: slideHeight = isVertical ? galleryHeight * 0.9 : galleryWidth*imageRatio * 0.9;
-  $: newSizes = getSizes(dto);
+  $: getSizes(dto);
   $: fullscreenUrl = urlFromSizes(sizes);
   $: nextArrowTitle = `Next image: ${index+1} / ${galleryLength}`;
   $: backArrowTitle = `Previous image: ${index-1} / ${galleryLength}`;
@@ -20,16 +20,16 @@
   $: slideLeft = (galleryWidth-slideWidth) / 2;
 
   function urlFromSizes(sizes) {
-    if (canAvoidOriginal()) return sizes[sizes.length-2].source;
-    else return sizes[sizes.length-1].source;
+    return getBestFittingRes(sizes).source;
+  }
+
+  function getBestFittingRes(sizes) {
+    let bestSize = sizes.find(size => (size.height >= galleryHeight || size.width >= galleryWidth));
+    return bestSize || sizes[sizes.length-1];
   }
 
   function handleIconClick(direction) {
     handleFullscreen(dto.id, direction)
-  }
-
-  function canAvoidOriginal() {
-    return (sizes[sizes.length-1].label==='Original')
   }
 
   async function getSizes(dto) {
@@ -44,7 +44,6 @@
           res.sizes.size &&
           res.sizes.size.length > 0
         ) {
-          //console.log(res.sizes.size)
           sizes = res.sizes.size;
         }
   }
@@ -64,7 +63,7 @@
   </div>
   <div class="icons-background">
     <div class="close-icon image-icon">
-      <div on:click={() => {handleIconClick('close');}}> //if you cant pass args to an on:x function by design, this is the way to do it.
+      <div on:click={() => {handleIconClick('close');}}> <!-- if you cant pass args to an on:x function by design, this is the way to do it. -->
         <Icon icon={faTimes} class="image-icon" title="Close" />
       </div>
     </div>
