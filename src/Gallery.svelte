@@ -67,9 +67,12 @@ function arrow_Click(id,direction) {
 
 let throttledGetImages =
   throttle(getImages, 200, true);
+let throttledHandleScroll =
+  throttle(handleScroll, 50, true);
 
 
   function handleScroll() { //TODO should throttle scroll
+  console.log('scroll');
     const body = document.body;
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
@@ -102,10 +105,8 @@ let throttledGetImages =
   }
   
 
-beforeUpdate(() => {
-  handleScroll();
-    console.log('before update - try to lower me?')
-
+beforeUpdate(() => { //this will happen on scroll because of the bind to scrollY.
+  throttledHandleScroll();
 });
 
 afterUpdate(() => {
