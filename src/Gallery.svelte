@@ -100,12 +100,11 @@ let throttledGetImages =
     }
   }
   
-  onMount(async () => {
-  });
 
 beforeUpdate(() => {
   handleScroll();
-  console.log('before update - try to lower me?')
+    console.log('before update - try to lower me?')
+
 });
 
 afterUpdate(() => {
@@ -122,10 +121,10 @@ afterUpdate(() => {
 
 <!-- <div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div> -->
 	{#each images as dto, i}
-	 <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
-	{/each}
+    <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+  {/each}
   {#if fullscreenIdx >= 0}
-  <Fullscreen {galleryLength} {galleryWidth} {galleryHeight} dto={fullscreenDto} index={fullscreenIdx} {handleFullscreen}/>
+    <Fullscreen {galleryLength} {galleryWidth} {galleryHeight} dto={fullscreenDto} index={fullscreenIdx} {handleFullscreen}/>
   {/if}
 </div> 
 
