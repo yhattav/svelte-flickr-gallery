@@ -10,8 +10,9 @@
   let images=[];
   let windowScrollY, windowInnerWidth = 1000, windowInnerHeight;
   let galleryHeight = 5000, galleryWidth, clientHeight;
-  let shouldGetMoreItems, gettingItems = false;
+  let shouldGetMoreImages, gettingImages = false;
   let fullscreenIdx = -1;
+  let hoveredIdx = -1;
 //   function moveImage(dragIndex, hoverIndex) {
 // 		const { images } = this.state
 //     const dragImage = images[dragIndex]
@@ -47,6 +48,11 @@
     document.body.style.overflow = 'hidden';
   }
 
+    function handleHover(index) {
+      console.log('handle hover' , index);
+    hoveredIdx = index;
+  }
+
 function arrow_Click(id,direction) {
   var tempimages = this.state.images;
   var largeIndex = tempimages.map(function(e) { return e.id; }).indexOf(id);
@@ -73,13 +79,13 @@ let throttledGetImages =
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
     const windowBottom = windowInnerHeight + windowScrollY;
-    shouldGetMoreItems = windowScrollY > 100 && (windowBottom >= docHeight - 500 );
+    shouldGetMoreImages = windowScrollY > 100 && (windowBottom >= docHeight - 500 );
 
   }
 
   async function getImages(tag, page = currentPage) {
-    if(!gettingItems) {
-    gettingItems = true;
+    if(!gettingImages) {
+    gettingImages = true;
     const getImagesUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&page=${page}&format=json&nojsoncallback=1`;
     const response = await fetch(getImagesUrl , {
             method: 'GET',
@@ -96,7 +102,7 @@ let throttledGetImages =
         }
       
   currentPage = page + 1;
-  gettingItems = false;
+  gettingImages = false;
     }
   }
   
@@ -108,20 +114,49 @@ beforeUpdate(() => {
 });
 
 afterUpdate(() => {
-	if (shouldGetMoreItems) {
+	if (shouldGetMoreImages) {
     throttledGetImages(tag)};
 });
+
+	export function dragstart (ev, index) {
+    console.log('dragstart', index)
+    ev.dataTransfer.setData("index", index);
+    ev.dataTransfer.dropEffect = 'move';
+
+  }
+  
+	export function dragover (ev, i) {
+    ev.preventDefault();
+    hoveredIdx = i;
+    console.log('draged over', hoveredIdx);
+  }
+  
+	export function drop (ev) {
+        console.log('drop')
+
+		ev.preventDefault();
+    var dragedIndex = ev.dataTransfer.getData("index");
+    var newIndex = hoveredIdx; //why not use dataTransfer? because HTML5 dnd is broken. cant set it on the go so nothing to read at the end.
+    const dragImage = images[dragedIndex];
+    images.splice(dragedIndex,1);
+    images.splice(newIndex,0,dragImage);
+    images = images;
+	}
 
 </script>
 
 
 
 <svelte:window bind:innerWidth={windowInnerWidth} bind:innerHeight={windowInnerHeight} bind:scrollY={windowScrollY}/>
-<div class="gallery-root">
+<div class="gallery-root" on:drop={event => drop(event)}
+      >
 
 <!-- <div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div> -->
 	{#each images as dto, i}
-    <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+      <span draggable={true} on:dragover={event => dragover(event, i)} on:dragstart={event => dragstart(event, i)}>
+
+    <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {handleHover} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+  </span>
   {/each}
   {#if fullscreenIdx >= 0}
     <Fullscreen {galleryLength} {galleryWidth} {galleryHeight} dto={fullscreenDto} index={fullscreenIdx} {handleFullscreen}/>
