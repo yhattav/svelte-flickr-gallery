@@ -7,14 +7,14 @@ import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand'
 	import { onMount, beforeUpdate, afterUpdate} from 'svelte';
 
 let icon = faSync;
-export let index, id, large, handleFullscreen, key, dto, imageSize, galleryWidth, deleteClick;
-let rotate = 0, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '', imageUrl;
+export let index, id, large, handleFullscreen, key, dto, imageSize, galleryWidth, deleteClick, rotate = 0, handleRotate;
+let imageRotate, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '', imageUrl;
 
-  $: imageUrl = `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`
+  $: imageUrl = `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
+  $: imageRotate = rotate ? rotate : 0;
 
-
-  function handleRotate ()  {
-    rotate+=90;
+  function handleRotateClick ()  {
+    handleRotate(index, imageRotate+90);
   }
 
   function deleteImage()  {
@@ -26,10 +26,9 @@ let rotate = 0, opacity = 1, backgroundImage = '', width = '100%', height = '100
 
 </script>
 
-
-<div class="image-root" style="--imageUrl: url({imageUrl}); --galleryImageSize: {imageSize}px; --imageTransform: rotate({rotate}deg)">
-	<div class="image-icon-box" style="transform: rotate(-{rotate}deg);">
-    <div class="image-icon-wrapper rotateButton" name="sync-alt" title="rotate" on:click={handleRotate}>
+<div class="image-root" style="--imageUrl: url({imageUrl}); --galleryImageSize: {imageSize}px; --imageTransform: rotate({imageRotate}deg)">
+	<div class="image-icon-box" style="transform: rotate(-{imageRotate}deg);">
+    <div class="image-icon-wrapper rotateButton" name="sync-alt" title="rotate" on:click={handleRotateClick}>
       <Icon class="image-icon" icon={faSync}/>
     </div>
     <div class="image-icon-wrapper deleteButton" name="trash-alt" title="delete" on:click={deleteImage}>

@@ -50,7 +50,12 @@
 
     function handleHover(index) {
       console.log('handle hover' , index);
-    hoveredIdx = index;
+      hoveredIdx = index;
+  }
+
+  function handleRotate(index, rotate) {
+    images[index].rotate = rotate;
+    console.log(images[index].rotate);
   }
 
 function arrow_Click(id,direction) {
@@ -155,7 +160,7 @@ afterUpdate(() => {
 	{#each images as dto, i}
       <span draggable={true} on:dragover={event => dragover(event, i)} on:dragstart={event => dragstart(event, i)}>
 
-    <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {handleHover} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+    <Image index={i} id={dto.id} rotate={dto.rotate} {handleRotate} large={dto.large} {handleFullscreen} {handleHover} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
   </span>
   {/each}
   {#if fullscreenIdx >= 0}
