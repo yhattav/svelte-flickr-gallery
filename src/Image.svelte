@@ -28,13 +28,13 @@ let imageRotate, opacity = 1, backgroundImage = '', width = '100%', height = '10
 
 <div class="image-root" style="--imageUrl: url({imageUrl}); --galleryImageSize: {imageSize}px; --imageTransform: rotate({imageRotate}deg)">
 	<div class="image-icon-box" style="transform: rotate(-{imageRotate}deg);">
-    <div class="image-icon-wrapper rotateButton" name="sync-alt" title="rotate" on:click={handleRotateClick}>
+    <div class="image-icon-wrapper rotateButton" title="rotate" on:click={handleRotateClick}>
       <Icon class="image-icon" icon={faSync}/>
     </div>
-    <div class="image-icon-wrapper deleteButton" name="trash-alt" title="delete" on:click={deleteImage}>
+    <div class="image-icon-wrapper deleteButton" title="delete" on:click={deleteImage}>
       <Icon icon={faTrash} class="image-icon" />
     </div>
-    <div class="image-icon-wrapper expandButton" name="expand" title="expand" on:click={expandImage}>
+    <div class="image-icon-wrapper expandButton" title="expand" on:click={expandImage}>
       <Icon icon={faExpand} class="image-icon"/>
     </div>
 	</div>

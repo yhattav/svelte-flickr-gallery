@@ -63,20 +63,20 @@
   </div>
   <div class="icons-background">
     <div class="close-icon image-icon">
-      <div on:click={() => {handleIconClick('close');}}> <!-- if you cant pass args to an on:x function by design, this is the way to do it. -->
-        <Icon icon={faTimes} class="image-icon" title="Close" />
+      <div title="Close" on:click={() => {handleIconClick('close');}}> <!-- if you cant pass args to an on:x function by design, this is the way to do it. -->
+        <Icon icon={faTimes} class="image-icon"/>
       </div>
     </div>
       {#if index > 0}
     <div class="left-icon image-icon">
-      <div on:click={() => {handleIconClick(-1);}}>
-        <Icon icon={faChevronLeft} class="image-icon" title={backArrowTitle} />
+      <div title={backArrowTitle} on:click={() => {handleIconClick(-1);}}>
+        <Icon icon={faChevronLeft} class="image-icon"/>
       </div>
     </div>
       {/if}
     <div class="right-icon image-icon">
-      <div on:click={() => {handleIconClick(1);}}>
-        <Icon icon={faChevronRight} class="image-icon" title={nextArrowTitle} />
+      <div title={nextArrowTitle} on:click={() => {handleIconClick(1);}}>
+        <Icon icon={faChevronRight} class="image-icon"/>
       </div>
     </div>
   </div>

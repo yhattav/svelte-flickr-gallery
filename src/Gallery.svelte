@@ -13,23 +13,21 @@
   let shouldGetMoreImages, gettingImages = false;
   let fullscreenIdx = -1;
   let hoveredIdx = -1;
-//   function moveImage(dragIndex, hoverIndex) {
-// 		const { images } = this.state
-//     const dragImage = images[dragIndex]
-//     images.splice(dragIndex,1);
-//     images.splice(hoverIndex,0,dragImage);
-// 		this.setState({
-// 				images
-// 			});
-		
-// 	}
-
   $: imageSize = (galleryWidth / Math.round(windowInnerWidth / targetSize));
   $: galleryHeight = Math.max(document.documentElement.clientHeight, windowInnerHeight || 0);
   $: galleryWidth = windowInnerWidth;
-  $: throttledGetImages(tag, 0); //you can also bind functioncalls to changes in their args.
+  $: throttledGetImages(tag, 1); //you can also bind functioncalls to changes in their args.
   $: fullscreenDto = images[fullscreenIdx];
   $: galleryLength = images.length;
+  $: shouldGetImagesCloseToEnd(fullscreenIdx);
+
+
+  function shouldGetImagesCloseToEnd(fullscreenIdx) {
+    var len = images.length;
+    if ((len-fullscreenIdx)<3) {
+      throttledGetImages(tag, currentPage);
+    }
+  }
 
   function deleteClick(id) {
     var removeIndex = images.findIndex(image => image.id === id);
@@ -49,13 +47,11 @@
   }
 
     function handleHover(index) {
-      console.log('handle hover' , index);
       hoveredIdx = index;
   }
 
   function handleRotate(index, rotate) {
     images[index].rotate = rotate;
-    console.log(images[index].rotate);
   }
 
 function arrow_Click(id,direction) {
@@ -69,12 +65,6 @@ function arrow_Click(id,direction) {
 
 }
 
-// function getCloseToEnd(index,len) {
-//    var len = this.state.images.length;
-//    if ((len-index)<3) {
-//      this.getImages(tag,currentPage);
-//     }
-// }
 let throttledGetImages =
   throttle(getImages, 200, true);
 
@@ -102,8 +92,8 @@ let throttledGetImages =
           res.photos.photo &&
           res.photos.photo.length > 0
         )  {
-          if(page === 0) {images = []}
-          images = (page === 0) ? res.photos.photo : images.concat(res.photos.photo);
+          if(page === 1) {images = []}
+          images = (page === 1) ? res.photos.photo : images.concat(res.photos.photo);
         }
       
   currentPage = page + 1;
@@ -120,11 +110,10 @@ beforeUpdate(() => {
 
 afterUpdate(() => {
 	if (shouldGetMoreImages) {
-    throttledGetImages(tag)};
+    throttledGetImages(tag, currentPage)};
 });
 
 	export function dragstart (ev, index) {
-    console.log('dragstart', index)
     ev.dataTransfer.setData("index", index);
     ev.dataTransfer.dropEffect = 'move';
 
@@ -133,12 +122,9 @@ afterUpdate(() => {
 	export function dragover (ev, i) {
     ev.preventDefault();
     hoveredIdx = i;
-    console.log('draged over', hoveredIdx);
   }
   
 	export function drop (ev) {
-        console.log('drop')
-
 		ev.preventDefault();
     var dragedIndex = ev.dataTransfer.getData("index");
     var newIndex = hoveredIdx; //why not use dataTransfer? because HTML5 dnd is broken. cant set it on the go so nothing to read at the end.
@@ -156,7 +142,6 @@ afterUpdate(() => {
 <div class="gallery-root" on:drop={event => drop(event)}
       >
 
-<!-- <div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div> -->
 	{#each images as dto, i}
       <span draggable={true} on:dragover={event => dragover(event, i)} on:dragstart={event => dragstart(event, i)}>
 
