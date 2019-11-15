@@ -5,14 +5,16 @@
   import _ from 'lodash'
   import throttle from 'just-throttle'
 
-  let index = 0, dto = {}, imageSize = 200 , currentPage = 1, targetSize = 200, isScrollDisabled = false;
   export let tag;
+
+  let index = 0, dto = {}, imageSize = 200 , currentPage = 1, targetSize = 200, isScrollDisabled = false;
   let images=[];
   let windowScrollY, windowInnerWidth = 1000, windowInnerHeight;
   let galleryHeight = 5000, galleryWidth, clientHeight;
   let shouldGetMoreImages, gettingImages = false;
   let fullscreenIdx = -1;
   let hoveredIdx = -1;
+
   $: imageSize = (galleryWidth / Math.round(windowInnerWidth / targetSize));
   $: galleryHeight = Math.max(document.documentElement.clientHeight, windowInnerHeight || 0);
   $: galleryWidth = windowInnerWidth;
@@ -46,86 +48,69 @@
     document.body.style.overflow = 'hidden';
   }
 
-    function handleHover(index) {
-      hoveredIdx = index;
+  function handleHover(index) {
+    hoveredIdx = index;
   }
 
   function handleRotate(index, rotate) {
     images[index].rotate = rotate;
   }
 
-function arrow_Click(id,direction) {
-  var tempimages = this.state.images;
-  var largeIndex = tempimages.map(function(e) { return e.id; }).indexOf(id);
-  var newIndex = largeIndex+direction;
-  tempimages[largeIndex].large = !tempimages[largeIndex].large;
-  tempimages[newIndex].large = !tempimages[newIndex].large;
-  this.getCloseToEnd(newIndex,tempimages.length)
-  this.setState({images: tempimages});
-
-}
-
-let throttledGetImages =
-  throttle(getImages, 200, true);
-let throttledHandleScroll =
-  throttle(handleScroll, 50, true);
+  let throttledGetImages = throttle(getImages, 200, true);
+  let throttledHandleScroll = throttle(handleScroll, 50, true);
 
 
-  function handleScroll() { //TODO should throttle scroll
-  console.log('scroll');
+  function handleScroll() {
     const body = document.body;
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
     const windowBottom = windowInnerHeight + windowScrollY;
     shouldGetMoreImages = windowScrollY > 100 && (windowBottom >= docHeight - 500 );
-
   }
 
   async function getImages(tag, page = currentPage) {
     if(!gettingImages) {
-    gettingImages = true;
-    const getImagesUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&page=${page}&format=json&nojsoncallback=1`;
-    const response = await fetch(getImagesUrl , {
-            method: 'GET',
-          })
-          const res = await response.json();
-        if (
-          res &&
-          res.photos &&
-          res.photos.photo &&
-          res.photos.photo.length > 0
-        )  {
-          if(page === 1) {images = []}
-          images = (page === 1) ? res.photos.photo : images.concat(res.photos.photo);
-        }
-      
-  currentPage = page + 1;
-  gettingImages = false;
+      gettingImages = true;
+      const getImagesUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=522c1f9009ca3609bcbaf08545f067ad&tags=${tag}&tag_mode=any&per_page=100&page=${page}&format=json&nojsoncallback=1`;
+      const response = await fetch(getImagesUrl , {
+              method: 'GET',
+            })
+      const res = await response.json();
+      if (
+        res &&
+        res.photos &&
+        res.photos.photo &&
+        res.photos.photo.length > 0
+          )  {
+            if(page === 1) {images = []}
+            images = (page === 1) ? res.photos.photo : images.concat(res.photos.photo);
+          }
+      currentPage = page + 1;
+      gettingImages = false;
     }
   }
   
 
-beforeUpdate(() => { //this will happen on scroll because of the bind to scrollY.
-  throttledHandleScroll();
-});
+  beforeUpdate(() => { //this will happen on scroll because of the bind to scrollY.
+    throttledHandleScroll();
+  });
 
-afterUpdate(() => {
-	if (shouldGetMoreImages) {
-    throttledGetImages(tag, currentPage)};
-});
+  afterUpdate(() => {
+    if (shouldGetMoreImages) {
+      throttledGetImages(tag, currentPage)};
+  });
 
-	export function dragstart (ev, index) {
+	function dragstart (ev, index) {
     ev.dataTransfer.setData("index", index);
     ev.dataTransfer.dropEffect = 'move';
-
   }
   
-	export function dragover (ev, i) {
+	function dragover (ev, i) {
     ev.preventDefault();
     hoveredIdx = i;
   }
   
-	export function drop (ev) {
+	function drop (ev) {
 		ev.preventDefault();
     var dragedIndex = ev.dataTransfer.getData("index");
     var newIndex = hoveredIdx; //why not use dataTransfer? because HTML5 dnd is broken. cant set it on the go so nothing to read at the end.
@@ -136,7 +121,6 @@ afterUpdate(() => {
 	}
 
 </script>
-
 
 
 <svelte:window bind:innerWidth={windowInnerWidth} bind:innerHeight={windowInnerHeight} bind:scrollY={windowScrollY}/>
@@ -159,16 +143,5 @@ afterUpdate(() => {
 <style>
 .gallery-root {
   text-align: center;
-}
-
-.gallery-header {
-  background-color: #222;
-  padding: 10px;
-  color: white;
-  font-size: 20pt;
-}
-
-.gallery-intro {
-  font-size: 15pt;
 }
 </style>

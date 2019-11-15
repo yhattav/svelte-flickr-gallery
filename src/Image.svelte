@@ -1,14 +1,14 @@
 <script>
-	//name = 'arshole';
-import Icon from 'fa-svelte'
-import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand'
-	import { onMount, beforeUpdate, afterUpdate} from 'svelte';
+  import Icon from 'fa-svelte'
+  import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
+  import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+  import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand'
+  import { onMount, beforeUpdate, afterUpdate} from 'svelte';
 
-let icon = faSync;
-export let index, id, large, handleFullscreen, key, dto, imageSize, galleryWidth, deleteClick, rotate = 0, handleRotate;
-let imageRotate, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '', imageUrl;
+  export let index, id, large, handleFullscreen, key, dto, imageSize, galleryWidth, deleteClick, rotate = 0, handleRotate;
+
+  let icon = faSync;
+  let imageRotate, opacity = 1, backgroundImage = '', width = '100%', height = '100%', transform = '', imageUrl;
 
   $: imageUrl = `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
   $: imageRotate = rotate ? rotate : 0;
@@ -96,7 +96,6 @@ div :global(.image-icon):hover {
     color: white;
     border-color: white;
   }
-  
 
 </style>
 

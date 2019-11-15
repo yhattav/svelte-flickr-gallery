@@ -1,14 +1,16 @@
 <script>
-	let tag = 'dogs', searchVal = 'dogs', placeholder = 'dogs';
   import Gallery from './Gallery.svelte';
   import _ from 'lodash'
+
+	let tag = 'dogs', searchVal = 'dogs', placeholder = 'dogs';
   let updateSearchDebounced = _.debounce(val => { tag = val ==='' ? placeholder : val}, 250, false);
+  
   $: updateSearchDebounced(searchVal);
 </script>
 
 <div class="app-root">
 	<div class="app-header" id="top">
-		<h2>Flickr Gallery</h2>
+		<h2>Svelte Flickr Gallery</h2>
 		<input class="app-input" bind:value={searchVal} {placeholder}/>
 	</div>
 	<Gallery {tag}></Gallery>
@@ -17,15 +19,6 @@
 
 
 <style>
-/* :global(body){
-  padding: 0;
-  margin: 0;
-}
-
-:global(html) {
-  padding: 0;
-  margin: 0;
-} */
 
 .app-root {
   text-align: center;

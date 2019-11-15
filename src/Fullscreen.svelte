@@ -3,8 +3,11 @@
   import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes'
   import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
   import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight'
+
+  export let galleryWidth, galleryHeight, dto = {}, index, galleryLength, handleFullscreen;
+  
   let sizes=[{width: 100, height: 100, source:''}];
-	export let galleryWidth, galleryHeight, dto = {}, index, galleryLength, handleFullscreen;
+
   $: imageWidth = sizes[sizes.length-1] ? sizes[sizes.length-1].width : sizes[sizes.length].width;
   $: imageHeight = sizes[sizes.length-1] ? sizes[sizes.length-1].height : sizes[sizes.length].height;
   $: imageRatio = imageHeight / imageWidth;
@@ -36,16 +39,16 @@
     const getSizesUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=522c1f9009ca3609bcbaf08545f067ad&photo_id=${dto.id}&format=json&nojsoncallback=1`;
     const response = await fetch(getSizesUrl , {
             method: 'GET',
-          })
-          const res = await response.json();
-        if (
-          res &&
-          res.sizes &&
-          res.sizes.size &&
-          res.sizes.size.length > 0
-        ) {
-          sizes = res.sizes.size;
-        }
+          });
+    const res = await response.json();
+    if (
+      res &&
+      res.sizes &&
+      res.sizes.size &&
+      res.sizes.size.length > 0
+    ) {
+      sizes = res.sizes.size;
+    }
   }
 
 </script>
@@ -193,10 +196,10 @@
         box-sizing: border-box;
         position: absolute;
         background-image: var(--fullecreenUrl); 
-                width: var(--slideWidth); 
-                height: var(--slideHeight); 
-                top: var(--slideTop);
-                left: var(--slideLeft);
+        width: var(--slideWidth); 
+        height: var(--slideHeight); 
+        top: var(--slideTop);
+        left: var(--slideLeft);
       }
     }
   }
