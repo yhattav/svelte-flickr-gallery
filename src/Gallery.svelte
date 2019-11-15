@@ -26,7 +26,7 @@
   $: imageSize = (galleryWidth / Math.round(windowInnerWidth / targetSize));
   $: galleryHeight = Math.max(document.documentElement.clientHeight, windowInnerHeight || 0);
   $: galleryWidth = windowInnerWidth;
-  $: newImages = throttledGetImages(tag, 0);
+  $: throttledGetImages(tag, 0); //you can also bind functioncalls to changes in their args.
   $: fullscreenDto = images[fullscreenIdx];
   $: galleryLength = images.length;
 
@@ -40,7 +40,6 @@
   function handleFullscreen(id, direction = 0) {
     if (direction === 'close') {
       fullscreenIdx = -1;
-      console.log('set fidx to -1')
       document.body.style.overflow = 'auto';
       return;
     }
@@ -67,7 +66,7 @@ function arrow_Click(id,direction) {
 //     }
 // }
 let throttledGetImages =
-  throttle(getImages, 1000, true);
+  throttle(getImages, 200, true);
 
 
   function handleScroll() {

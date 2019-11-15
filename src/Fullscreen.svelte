@@ -64,7 +64,7 @@
   </div>
   <div class="icons-background">
     <div class="close-icon image-icon">
-      <div on:click={() => {handleIconClick('close');}}>
+      <div on:click={() => {handleIconClick('close');}}> //if you cant pass args to an on:x function by design, this is the way to do it.
         <Icon icon={faTimes} class="image-icon" title="Close" />
       </div>
     </div>
