@@ -3,6 +3,16 @@
 	import Gallery from './Gallery.svelte';
 </script>
 
+<div class="app-root">
+	<div class="app-header" id="top">
+		<h2>Flickr Gallery</h2>
+		<input class="app-input" bind:value={tag} placeholder="art"/>
+	</div>
+	<Gallery tag={tag}></Gallery>
+</div>
+
+
+
 <style>
 /* :global(body){
   padding: 0;
@@ -36,12 +46,3 @@
   margin-bottom: 30px;
 }
 </style>
-
-
-<div class="app-root">
-	<div class="app-header" id="top">
-		<h2>Flickr Gallery</h2>
-		<input class="app-input" bind:value={tag} placeholder="art"/>
-	</div>
-	<Gallery tag={tag}></Gallery>
-</div>

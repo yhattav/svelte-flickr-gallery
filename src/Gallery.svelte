@@ -1,15 +1,17 @@
 <script>
 	import Image from './Image.svelte';
+	import Fullscreen from './Fullscreen.svelte';
 	import { onMount, beforeUpdate, afterUpdate} from 'svelte';
   import _ from 'lodash'
   import throttle from 'just-throttle'
 
-  let index = 0, dto = {}, imageSize = 200 , currentPage = 1, targetSize = 200;
+  let index = 0, dto = {}, imageSize = 200 , currentPage = 1, targetSize = 200, isScrollDisabled = false;
   export let tag;
   let images=[];
   let windowScrollY, windowInnerWidth = 1000, windowInnerHeight;
   let galleryHeight = 5000, galleryWidth, clientHeight;
-  let div, shouldGetMoreItems, gettingItems = false;
+  let shouldGetMoreItems, gettingItems = false;
+  let fullscreenIdx = -1;
 //   function moveImage(dragIndex, hoverIndex) {
 // 		const { images } = this.state
 //     const dragImage = images[dragIndex]
@@ -25,24 +27,27 @@
   $: galleryHeight = Math.max(document.documentElement.clientHeight, windowInnerHeight || 0);
   $: galleryWidth = windowInnerWidth;
   $: newImages = throttledGetImages(tag, 0);
+  $: fullscreenDto = images[fullscreenIdx];
+  $: galleryLength = images.length;
 
-  function delete_Click(id) {
-    var tempimages = this.state.images;
-    var removeIndex = tempimages.map(function(e) { return e.id; }).indexOf(id);
-    tempimages.splice(removeIndex, 1);
-    this.setState({images: tempimages});
-    
-   }
+  function deleteClick(id) {
+    var removeIndex = images.findIndex(image => image.id === id);
+    console.log('remove', removeIndex, id);
+    images.splice(removeIndex, 1); //mutating objects (and arrays) that are render-involved will not rerender in svelte, see the next line for the solution
+    images = images; //this is by design https://github.com/sveltejs/svelte/issues/2362
+  }
 
-   function large_Click(id) {
-    var tempimages = this.state.images;
-    var largeIndex = tempimages.map(function(e) { return e.id; }).indexOf(id);
-    tempimages[largeIndex].large = !tempimages[largeIndex].large;
-    this.setState({images: tempimages});
-    
-    document.body.style.overflow=(this.isScrollDisabled ? 'auto':'hidden');
-    this.isScrollDisabled = !this.isScrollDisabled;
-   }
+  function handleFullscreen(id, direction = 0) {
+    if (direction === 'close') {
+      fullscreenIdx = -1;
+      console.log('set fidx to -1')
+      document.body.style.overflow = 'auto';
+      return;
+    }
+    const _index = images.findIndex(image => image.id === id);
+    fullscreenIdx = _index + direction;
+    document.body.style.overflow = 'hidden';
+  }
 
 function arrow_Click(id,direction) {
   var tempimages = this.state.images;
@@ -104,6 +109,7 @@ let throttledGetImages =
 
 beforeUpdate(() => {
   handleScroll();
+  console.log('before update')
 });
 
 afterUpdate(() => {
@@ -116,12 +122,15 @@ afterUpdate(() => {
 
 
 <svelte:window bind:innerWidth={windowInnerWidth} bind:innerHeight={windowInnerHeight} bind:scrollY={windowScrollY}/>
-<div bind:this={div} class="gallery-root">
+<div class="gallery-root">
 
 <!-- <div>  images: {images.length}, windowInnerWidth: {windowInnerWidth}, windowInnerHeight: {windowInnerHeight}, windowScrollY: {windowScrollY}, imageSize: {imageSize}, galleryHeight: {galleryHeight}, clientHeight: {document.documentElement.clientHeight}, galleryWidth: {galleryWidth}</div> -->
-	{#each images as dto}
-	 <Image index={index} id={dto.id} large={dto.large} {large_Click} {delete_Click} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
+	{#each images as dto, i}
+	 <Image index={i} id={dto.id} large={dto.large} {handleFullscreen} {deleteClick} key={'image-' + dto.id} {dto} {imageSize} {galleryWidth}/>
 	{/each}
+  {#if fullscreenIdx >= 0}
+  <Fullscreen {galleryLength} {galleryWidth} {galleryHeight} dto={fullscreenDto} index={fullscreenIdx} {handleFullscreen}/>
+  {/if}
 </div> 
 
 
